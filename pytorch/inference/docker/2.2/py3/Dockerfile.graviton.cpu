@@ -4,12 +4,12 @@ ARG MAMBA_VERSION=23.11.0-0
 ARG OPEN_MPI_VERSION=4.1.5
 
 # PyTorch Graviton Binaries
-ARG TORCH_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torch-2.2.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
-ARG TORCHVISION_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torchvision-0.17.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
-ARG TORCHAUDIO_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torchaudio-2.2.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
-ARG TORCHTEXT_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torchtext-0.17.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
-ARG TORCHSERVE_VERSION
-ARG SM_TOOLKIT_VERSION
+# ARG TORCH_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torch-2.2.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
+# ARG TORCHVISION_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torchvision-0.17.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
+# ARG TORCHAUDIO_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torchaudio-2.2.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
+# ARG TORCHTEXT_URL=https://framework-binaries.s3.us-west-2.amazonaws.com/pytorch/v2.2.1/arm64_cpu/torchtext-0.17.1%2Bcpu-cp310-cp310-manylinux2014_aarch64.whl
+ARG TORCHSERVE_VERSION=0.11.0
+ARG SM_TOOLKIT_VERSION=2.0.24
 
 ########################################################
 #  _____ ____ ____    ___
@@ -143,13 +143,14 @@ RUN ln -s /opt/conda/bin/pip /usr/local/bin/pip3 \
 # Ensure PyTorch did not get installed from Conda or pip, prior to now
 RUN pip uninstall -y torch torchvision torchaudio torchdata model-archiver multi-model-server
 
+COPY torch-2.3.0a0+gita5cb446-cp310-cp310-manylinux2014_aarch64.whl /usr/local/bin/torch-2.3.0a0+gita5cb446-cp310-cp310-manylinux2014_aarch64.whl
+
 # install pytorch wheels
 RUN pip install --no-cache-dir -U \
-    ${TORCH_URL} \
-    ${TORCHVISION_URL} \
-    ${TORCHAUDIO_URL} \
-    ${TORCHTEXT_URL} \
-    "torchdata==0.7.1"
+    "/usr/local/bin/torch-2.3.0a0+gita5cb446-cp310-cp310-manylinux2014_aarch64.whl" \
+    "torchvision" \
+    "torchaudio" \
+    "torchtext"
 
 # Install TorchServe pypi dependencies directly from their requirements.txt file
 # NOTE: This also brings in unnecessary cpu dependencies like nvgpu
